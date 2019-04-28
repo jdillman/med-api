@@ -1,0 +1,2 @@
+class VisitItem < ApplicationRecord
+end
