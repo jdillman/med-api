@@ -1,2 +1,3 @@
 class PersonType < ApplicationRecord
+  
 end

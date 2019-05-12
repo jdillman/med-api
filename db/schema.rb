@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_12_025550) do
+ActiveRecord::Schema.define(version: 2019_05_12_033919) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -21,20 +21,24 @@ ActiveRecord::Schema.define(version: 2019_05_12_025550) do
   end
 
   create_table "people", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
+    t.belongs_to :account, index: true
+    t.belongs_to :person_type
+    t.string "email"
+    t.string "name", index: true
     t.date "birth_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "person_types", force: :cascade do |t|
-    t.string "name"
+    t.string "name", index: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
+    t.belongs_to :account, index: true
+    t.string "name"
     t.string "email"
     t.string "password_digest"
     t.datetime "created_at", null: false
@@ -43,11 +47,13 @@ ActiveRecord::Schema.define(version: 2019_05_12_025550) do
   end
 
   create_table "visit_items", force: :cascade do |t|
+    t.belongs_to :account, index: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "visits", force: :cascade do |t|
+    t.belongs_to :account, index: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

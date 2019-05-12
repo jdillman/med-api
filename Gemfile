@@ -20,6 +20,13 @@ gem 'bcrypt', '~> 3.1.7'
 # Better ENV vars
 gem 'figaro'
 
+# Fake data generator
+gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
+
+# IRB Alternative, binding.pry
+gem 'pry'
+gem 'pry-byebug'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
