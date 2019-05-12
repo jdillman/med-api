@@ -1,4 +1,4 @@
-class VisitItemsController < ApplicationController
+class Api::V1::VisitItemsController < ApplicationController
   before_action :set_visit_item, only: [:show, :update, :destroy]
 
   # GET /visit_items

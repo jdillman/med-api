@@ -1,4 +1,4 @@
-class PersonTypesController < ApplicationController
+class Api::v1::PersonTypesController < ApplicationController
   before_action :set_person_type, only: [:show, :update, :destroy]
 
   # GET /person_types
