@@ -19,7 +19,7 @@ namespace :db do
 
     puts 'Creating sample People'
     1000.times {
-      if rand(1..10) > 1
+      if rand(1..10) > 2
         personable = Caregiver.create!(
           license_id: Faker::IDNumber::spanish_citizen_number
         )

@@ -21,8 +21,6 @@ ActiveRecord::Schema.define(version: 2019_05_17_041742) do
   end
 
   create_table "caregivers", force: :cascade do |t|
-    t.string "personable_type"
-    t.integer "personable_id"
     t.string "license_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -30,8 +28,6 @@ ActiveRecord::Schema.define(version: 2019_05_17_041742) do
   end
 
   create_table "patients", force: :cascade do |t|
-    t.string "personable_type"
-    t.integer "personable_id"
     t.datetime "admitted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -47,7 +43,7 @@ ActiveRecord::Schema.define(version: 2019_05_17_041742) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "personable_id"
-    t.integer "personable_type"
+    t.string "personable_type"
     t.index ["account_id"], name: "index_people_on_account_id"
     t.index ["name"], name: "index_people_on_name"
     t.index ["person_type_id"], name: "index_people_on_person_type_id"
