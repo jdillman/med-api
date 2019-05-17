@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_12_033919) do
+ActiveRecord::Schema.define(version: 2019_05_17_041742) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -20,42 +20,69 @@ ActiveRecord::Schema.define(version: 2019_05_12_033919) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "caregivers", force: :cascade do |t|
+    t.string "personable_type"
+    t.integer "personable_id"
+    t.string "license_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["personable_type", "personable_id"], name: "index_caregivers_on_personable_type_and_personable_id"
+  end
+
+  create_table "patients", force: :cascade do |t|
+    t.string "personable_type"
+    t.integer "personable_id"
+    t.datetime "admitted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["personable_type", "personable_id"], name: "index_patients_on_personable_type_and_personable_id"
+  end
+
   create_table "people", force: :cascade do |t|
-    t.belongs_to :account, index: true
-    t.belongs_to :person_type
+    t.integer "account_id"
+    t.integer "person_type_id"
     t.string "email"
-    t.string "name", index: true
+    t.string "name"
     t.date "birth_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "personable_id"
+    t.integer "personable_type"
+    t.index ["account_id"], name: "index_people_on_account_id"
+    t.index ["name"], name: "index_people_on_name"
+    t.index ["person_type_id"], name: "index_people_on_person_type_id"
   end
 
   create_table "person_types", force: :cascade do |t|
-    t.string "name", index: true
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_person_types_on_name"
   end
 
   create_table "users", force: :cascade do |t|
-    t.belongs_to :account, index: true
+    t.integer "account_id"
     t.string "name"
     t.string "email"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   create_table "visit_items", force: :cascade do |t|
-    t.belongs_to :account, index: true
+    t.integer "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_visit_items_on_account_id"
   end
 
   create_table "visits", force: :cascade do |t|
-    t.belongs_to :account, index: true
+    t.integer "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_visits_on_account_id"
   end
 
 end

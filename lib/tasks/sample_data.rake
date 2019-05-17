@@ -17,18 +17,29 @@ namespace :db do
       password: 'sample_user'
     )
 
-    patient = PersonType.find_by_name('Patient')
-    binding.pry
+    puts 'Creating sample People'
+    1000.times {
+      if rand(1..10) > 1
+        personable = Caregiver.create!(
+          license_id: Faker::IDNumber::spanish_citizen_number
+        )
+        print '.'
+      else
+        personable = Patient.create!(
+          admitted_at: Faker::Date.between(11.years.ago, Date.today)
+        )
+        print '*'
+      end
 
-    1000.times { 
       Person.create!(
         email: Faker::Internet.email,
         name: Faker::Name.name,
         birth_date: Faker::Date.birthday(1, 120),
         account: account,
-        person_type: patient
+        personable: personable
       )
     }
 
+    puts 'Finished!'
   end
 end
