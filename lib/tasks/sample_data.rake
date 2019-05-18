@@ -10,13 +10,11 @@ namespace :db do
 
   desc 'Populates the database with sample data'
   task populate_sample_data: :environment do
-    account = create_accounts(1)
-
-    create_people(account, 400)
-
-    shifts = create_shifts(account, Caregiver.random_records(30))
-
-    create_visits(account, shifts, 100)
+    create_accounts(3).each do |account|
+      create_people(account, 200)
+      create_shifts(account, 50)
+      # create_visits(account, shifts, 100)
+    end
 
     # TODO Plug in FE when you get to this point
   end
@@ -47,7 +45,7 @@ def create_people(account, count)
       personable: personable
     )
   end
-  
+
   puts ''
   puts 'Finished creating People!'
 
@@ -55,8 +53,10 @@ def create_people(account, count)
 end
 
 # TODO random shift count per caregiver
-def create_shifts(account, caregivers)
+def create_shifts(account, count)
   puts 'Creating sample Shifts'
+
+  caregivers = Person.where(account: account).where(personable_type: 'Caregiver').limit(count)
 
   shifts = []
   caregivers.each do |caregiver|
@@ -64,13 +64,13 @@ def create_shifts(account, caregivers)
     end_time = Faker::Date.between(start_time, Date.today)
     shifts << Shift.create!(
       account: account,
-      caregiver: caregiver,
+      caregiver: caregiver.personable,
       start_time: start_time,
       end_time: end_time
     )
     print '.'
   end
-  
+
   puts ''
   puts 'Finished creating Shifts!'
 
@@ -89,6 +89,8 @@ def create_visits(account, shifts, count)
 end
 
 def create_accounts(count)
+  puts 'Creating sample Accounts'
+
   accounts = []
   count.times do
     account = Account.create!(name: Faker::Company.name)
@@ -103,9 +105,8 @@ def create_accounts(count)
     accounts << account
   end
 
-  if count == 1
-    accounts.first
-  else
-    accounts
-  end
+  puts ''
+  puts 'Finished creating Accounts'
+
+  accounts
 end
