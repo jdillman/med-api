@@ -14,11 +14,3 @@ User.create!(
   password: ENV['super_admin_pw'] || 'testtest',
   account: account
 )
-
-PersonType.create!(
-  name: 'default',
-)
-
-# PersonType.create!(
-#   name: 'Supervisor'
-# )

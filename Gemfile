@@ -30,6 +30,9 @@ gem 'pry'
 gem 'pry-byebug'
 gem 'pry-rails'
 
+# Pluck random reconds when generating dummy data
+gem 'quick_random_records'
+
 # Linting
 gem 'rubocop', require: false
 

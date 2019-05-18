@@ -81,4 +81,13 @@ ActiveRecord::Schema.define(version: 2019_05_17_041742) do
     t.index ["account_id"], name: "index_visits_on_account_id"
   end
 
+  create_table "shifts", force: :cascade do |t|
+    t.integer "account_id"
+    t.datetime "start_time", null: false
+    t.datetime "end_time", null: false
+    t.integer "caregiver_id"
+    t.index ["account_id"], name: "index_shifts_on_account_id"
+    t.index ["caregiver_id"], name: "index_shifts_on_caregiver_id"
+  end
+
 end

@@ -1,11 +1,35 @@
+# frozen_string_literal: true
+
 require 'faker'
+
+namespace :db do
+  desc 'Drop, create, migrate, seed and populate sample data'
+  task prepare: [:drop, :create, 'schema:load', :seed, :populate_sample_data] do
+    puts 'Ready to go!'
+  end
+
+  desc 'Populates the database with sample data'
+  task populate_sample_data: :environment do
+    account = create_accounts(1)
+
+    create_people(account, 400)
+
+    shifts = create_shifts(account, Caregiver.random_records(30))
+
+    create_visits(account, shifts, 100)
+
+    # TODO Plug in FE when you get to this point
+  end
+end
 
 def create_people(account, count)
   puts 'Creating sample People'
-  count.times {
+
+  people = []
+  count.times do
     if rand(1..10) > 2
       personable = Caregiver.create!(
-        license_id: Faker::IDNumber::spanish_citizen_number
+        license_id: Faker::IDNumber.spanish_citizen_number
       )
       print '.'
     else
@@ -15,52 +39,73 @@ def create_people(account, count)
       print '*'
     end
 
-    Person.create!(
+    people << Person.create!(
+      account: account,
       email: Faker::Internet.email,
       name: Faker::Name.name,
       birth_date: Faker::Date.birthday(1, 120),
-      account: account,
       personable: personable
     )
-  }
-  puts 'Finished creating people!'
+  end
+  
+  puts ''
+  puts 'Finished creating People!'
+
+  people
 end
 
-def create_shifts(account, count)
-  Shift.create!(
+# TODO random shift count per caregiver
+def create_shifts(account, caregivers)
+  puts 'Creating sample Shifts'
 
+  shifts = []
+  caregivers.each do |caregiver|
+    start_time = Faker::Date.between(2.years.ago, Date.yesterday)
+    end_time = Faker::Date.between(start_time, Date.today)
+    shifts << Shift.create!(
+      account: account,
+      caregiver: caregiver,
+      start_time: start_time,
+      end_time: end_time
+    )
+    print '.'
+  end
+  
+  puts ''
+  puts 'Finished creating Shifts!'
 
-  )
-
+  shifts
 end
 
-def create_accout(count)
-  account = Account.create!(name: Faker::Company.name)
+def create_visits(account, shifts, count)
+  puts 'Creating sample Visits'
 
-  User.create!(
-    email: Faker::Internet.email,
-    name: Faker::Name.name,
-    account: account,
-    password: 'sample_user'
-  )
-
-  account
-end
-
-namespace :db do
-  desc 'Drop, create, migrate, seed and populate sample data'
-  task prepare: [:drop, :create, "schema:load", :seed, :populate_sample_data] do
-    puts 'Ready to go!'
+  count.times do
+    print '.'
   end
 
-  desc 'Populates the database with sample data'
-  task populate_sample_data: :environment do
+  puts ''
+  puts 'Finished creating Visits'
+end
 
-    account = create_account(1)
+def create_accounts(count)
+  accounts = []
+  count.times do
+    account = Account.create!(name: Faker::Company.name)
 
-    create_people(account, 500)
+    User.create!(
+      account: account,
+      email: Faker::Internet.email,
+      name: Faker::Name.name,
+      password: 'sample_user'
+    )
 
-    create_shifts(account, 100)
-    
+    accounts << account
+  end
+
+  if count == 1
+    accounts.first
+  else
+    accounts
   end
 end
