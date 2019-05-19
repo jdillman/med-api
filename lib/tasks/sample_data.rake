@@ -16,8 +16,6 @@ namespace :db do
       create_locations(account, 100)
       create_visits(account, 100)
     end
-
-    # TODO Plug in FE when you get to this point
   end
 end
 
