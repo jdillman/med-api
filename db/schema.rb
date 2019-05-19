@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_17_041742) do
+ActiveRecord::Schema.define(version: 2019_05_19_035906) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -20,18 +20,27 @@ ActiveRecord::Schema.define(version: 2019_05_17_041742) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "users", force: :cascade do |t|
+    t.integer "account_id"
+    t.string "name"
+    t.string "email"
+    t.string "password_digest"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_users_on_account_id"
+    t.index ["email"], name: "index_users_on_email", unique: true
+  end
+
   create_table "caregivers", force: :cascade do |t|
     t.string "license_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["personable_type", "personable_id"], name: "index_caregivers_on_personable_type_and_personable_id"
   end
 
   create_table "patients", force: :cascade do |t|
     t.datetime "admitted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["personable_type", "personable_id"], name: "index_patients_on_personable_type_and_personable_id"
   end
 
   create_table "people", force: :cascade do |t|
@@ -56,29 +65,16 @@ ActiveRecord::Schema.define(version: 2019_05_17_041742) do
     t.index ["name"], name: "index_person_types_on_name"
   end
 
-  create_table "users", force: :cascade do |t|
-    t.integer "account_id"
+  create_table "locations", force: :cascade do |t|
     t.string "name"
-    t.string "email"
-    t.string "password_digest"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.text "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_users_on_account_id"
-    t.index ["email"], name: "index_users_on_email", unique: true
-  end
-
-  create_table "visit_items", force: :cascade do |t|
     t.integer "account_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_visit_items_on_account_id"
-  end
-
-  create_table "visits", force: :cascade do |t|
-    t.integer "account_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_visits_on_account_id"
+    t.index ["account_id"], name: "index_locations_on_account_id"
   end
 
   create_table "shifts", force: :cascade do |t|
@@ -88,6 +84,26 @@ ActiveRecord::Schema.define(version: 2019_05_17_041742) do
     t.integer "caregiver_id"
     t.index ["account_id"], name: "index_shifts_on_account_id"
     t.index ["caregiver_id"], name: "index_shifts_on_caregiver_id"
+  end
+
+  create_table "visits", force: :cascade do |t|
+    t.integer "account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "shift_id"
+    t.integer "location_id"
+    t.integer "patient_id"
+    t.index ["patient_id"], name: "index_visits_on_patient_id"
+    t.index ["account_id"], name: "index_visits_on_account_id"
+    t.index ["location_id"], name: "index_visits_on_location_id"
+    t.index ["shift_id"], name: "index_visits_on_shift_id"
+  end
+
+  create_table "visit_items", force: :cascade do |t|
+    t.integer "account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_visit_items_on_account_id"
   end
 
 end

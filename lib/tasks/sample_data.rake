@@ -13,11 +13,33 @@ namespace :db do
     create_accounts(3).each do |account|
       create_people(account, 200)
       create_shifts(account, 50)
-      # create_visits(account, shifts, 100)
+      create_locations(account, 100)
+      create_visits(account, 100)
     end
 
     # TODO Plug in FE when you get to this point
   end
+end
+
+def create_locations(account, count)
+  puts 'Creating sample Locations'
+
+  locations = []
+  count.times do
+    locations << Location.create!(
+      account: account,
+      name: Faker::Company.name,
+      city: Faker::Address.city,
+      state: Faker::Address.state,
+      zip: Faker::Address.zip,
+      address: Faker::Address.street_address
+    )
+  end
+
+  puts ''
+  puts 'Finished creating Locations'
+
+  locations
 end
 
 def create_people(account, count)
@@ -77,10 +99,20 @@ def create_shifts(account, count)
   shifts
 end
 
-def create_visits(account, shifts, count)
+# TODO random visit count per shift
+def create_visits(account, count)
   puts 'Creating sample Visits'
 
-  count.times do
+  patients = Person.where(account: account).where(personable_type: 'Patient').limit(count)
+
+  patients.each do |patient|
+    Visit.create!(
+      account: account,
+      patient: patient.personable,
+      shift: Shift.where(account: account).random_records(1).first,
+      location: Location.where(account: account).random_records(1).first
+    )
+
     print '.'
   end
 
@@ -98,7 +130,7 @@ def create_accounts(count)
     User.create!(
       account: account,
       email: Faker::Internet.email,
-      name: Faker::Name.name,
+      name: Faker::Company.name,
       password: 'sample_user'
     )
 
