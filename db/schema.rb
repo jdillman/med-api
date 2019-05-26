@@ -10,9 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_19_035906) do
+ActiveRecord::Schema.define(version: 2019_05_26_060131) do
 
-  create_table "accounts", force: :cascade do |t|
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
+  enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
+
+  create_table :accounts, id: :uuid, force: :cascade do |t|
     t.string "name"
     t.datetime "active_at"
     t.boolean "active"
@@ -20,8 +25,63 @@ ActiveRecord::Schema.define(version: 2019_05_19_035906) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "users", force: :cascade do |t|
-    t.integer "account_id"
+  create_table :caregivers, id: :uuid, force: :cascade do |t|
+    t.string "license_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table :locations, id: :uuid, force: :cascade do |t|
+    t.string "name"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.text "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "account_id"
+    t.index ["account_id"], name: "index_locations_on_account_id"
+  end
+
+  create_table :patients, id: :uuid, force: :cascade do |t|
+    t.datetime "admitted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table :people, id: :uuid, force: :cascade do |t|
+    t.uuid "account_id"
+    t.uuid "person_type_id"
+    t.string "email"
+    t.string "name"
+    t.date "birth_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "personable_id"
+    t.string "personable_type"
+    t.index ["account_id"], name: "index_people_on_account_id"
+    t.index ["name"], name: "index_people_on_name"
+    t.index ["person_type_id"], name: "index_people_on_person_type_id"
+  end
+
+  create_table :person_types, id: :uuid, force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_person_types_on_name"
+  end
+
+  create_table :shifts, id: :uuid, force: :cascade do |t|
+    t.uuid "account_id"
+    t.datetime "start_time", null: false
+    t.datetime "end_time", null: false
+    t.uuid "caregiver_id"
+    t.index ["account_id"], name: "index_shifts_on_account_id"
+    t.index ["caregiver_id"], name: "index_shifts_on_caregiver_id"
+  end
+
+  create_table :users, id: :uuid, force: :cascade do |t|
+    t.uuid "account_id"
     t.string "name"
     t.string "email"
     t.string "password_digest"
@@ -31,79 +91,24 @@ ActiveRecord::Schema.define(version: 2019_05_19_035906) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  create_table "caregivers", force: :cascade do |t|
-    t.string "license_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "patients", force: :cascade do |t|
-    t.datetime "admitted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "people", force: :cascade do |t|
-    t.integer "account_id"
-    t.integer "person_type_id"
-    t.string "email"
-    t.string "name"
-    t.date "birth_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "personable_id"
-    t.string "personable_type"
-    t.index ["account_id"], name: "index_people_on_account_id"
-    t.index ["name"], name: "index_people_on_name"
-    t.index ["person_type_id"], name: "index_people_on_person_type_id"
-  end
-
-  create_table "person_types", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_person_types_on_name"
-  end
-
-  create_table "locations", force: :cascade do |t|
-    t.string "name"
-    t.string "city"
-    t.string "state"
-    t.string "zip"
-    t.text "address"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "account_id"
-    t.index ["account_id"], name: "index_locations_on_account_id"
-  end
-
-  create_table "shifts", force: :cascade do |t|
-    t.integer "account_id"
-    t.datetime "start_time", null: false
-    t.datetime "end_time", null: false
-    t.integer "caregiver_id"
-    t.index ["account_id"], name: "index_shifts_on_account_id"
-    t.index ["caregiver_id"], name: "index_shifts_on_caregiver_id"
-  end
-
-  create_table "visits", force: :cascade do |t|
-    t.integer "account_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "shift_id"
-    t.integer "location_id"
-    t.integer "patient_id"
-    t.index ["patient_id"], name: "index_visits_on_patient_id"
-    t.index ["account_id"], name: "index_visits_on_account_id"
-    t.index ["location_id"], name: "index_visits_on_location_id"
-    t.index ["shift_id"], name: "index_visits_on_shift_id"
-  end
-
-  create_table "visit_items", force: :cascade do |t|
-    t.integer "account_id"
+  create_table :visit_items, id: :uuid, force: :cascade do |t|
+    t.uuid "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_visit_items_on_account_id"
+  end
+
+  create_table :visits, id: :uuid, force: :cascade do |t|
+    t.uuid "account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "shift_id"
+    t.uuid "location_id"
+    t.uuid "patient_id"
+    t.index ["account_id"], name: "index_visits_on_account_id"
+    t.index ["location_id"], name: "index_visits_on_location_id"
+    t.index ["patient_id"], name: "index_visits_on_patient_id"
+    t.index ["shift_id"], name: "index_visits_on_shift_id"
   end
 
 end

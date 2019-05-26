@@ -31,6 +31,8 @@ gem 'faker', git: 'https://github.com/stympy/faker.git', branch: 'master'
 # IRB Alternative, binding.pry
 gem 'pry'
 gem 'pry-rails'
+# grr, wh"?
+gem 'rb-readline'
 
 # Pluck random reconds when generating dummy data
 gem 'quick_random_records'

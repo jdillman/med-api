@@ -107,8 +107,8 @@ def create_visits(account, count)
     Visit.create!(
       account: account,
       patient: patient.personable,
-      shift: Shift.where(account: account).random_records(1).first,
-      location: Location.where(account: account).random_records(1).first
+      shift: Shift.where(account: account).first,
+      location: Location.where(account: account).first
     )
 
     print '.'
