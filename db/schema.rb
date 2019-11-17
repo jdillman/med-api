@@ -2,22 +2,21 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_26_060131) do
+ActiveRecord::Schema.define(version: 2019_11_17_203624) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "uuid-ossp"
 
-  create_table :accounts, id: :uuid, force: :cascade do |t|
+  create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.datetime "active_at"
     t.boolean "active"
@@ -25,13 +24,13 @@ ActiveRecord::Schema.define(version: 2019_05_26_060131) do
     t.datetime "updated_at", null: false
   end
 
-  create_table :caregivers, id: :uuid, force: :cascade do |t|
+  create_table "caregivers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "license_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table :locations, id: :uuid, force: :cascade do |t|
+  create_table "locations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "city"
     t.string "state"
@@ -43,13 +42,13 @@ ActiveRecord::Schema.define(version: 2019_05_26_060131) do
     t.index ["account_id"], name: "index_locations_on_account_id"
   end
 
-  create_table :patients, id: :uuid, force: :cascade do |t|
+  create_table "patients", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "admitted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table :people, id: :uuid, force: :cascade do |t|
+  create_table "people", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
     t.uuid "person_type_id"
     t.string "email"
@@ -64,14 +63,14 @@ ActiveRecord::Schema.define(version: 2019_05_26_060131) do
     t.index ["person_type_id"], name: "index_people_on_person_type_id"
   end
 
-  create_table :person_types, id: :uuid, force: :cascade do |t|
+  create_table "person_types", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_person_types_on_name"
   end
 
-  create_table :shifts, id: :uuid, force: :cascade do |t|
+  create_table "shifts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
     t.datetime "start_time", null: false
     t.datetime "end_time", null: false
@@ -80,7 +79,7 @@ ActiveRecord::Schema.define(version: 2019_05_26_060131) do
     t.index ["caregiver_id"], name: "index_shifts_on_caregiver_id"
   end
 
-  create_table :users, id: :uuid, force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
     t.string "name"
     t.string "email"
@@ -91,14 +90,14 @@ ActiveRecord::Schema.define(version: 2019_05_26_060131) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  create_table :visit_items, id: :uuid, force: :cascade do |t|
+  create_table "visit_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_visit_items_on_account_id"
   end
 
-  create_table :visits, id: :uuid, force: :cascade do |t|
+  create_table "visits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

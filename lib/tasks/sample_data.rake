@@ -52,7 +52,7 @@ def create_people(account, count)
       print '.'
     else
       personable = Patient.create!(
-        admitted_at: Faker::Date.between(11.years.ago, Date.today)
+        admitted_at: Faker::Date.between(from: 11.years.ago, to: Date.today)
       )
       print '*'
     end
@@ -61,7 +61,7 @@ def create_people(account, count)
       account: account,
       email: Faker::Internet.email,
       name: Faker::Name.name,
-      birth_date: Faker::Date.birthday(1, 120),
+      birth_date: Faker::Date.birthday(min_age: 1, max_age: 120),
       personable: personable
     )
   end
@@ -80,8 +80,8 @@ def create_shifts(account, count)
 
   shifts = []
   caregivers.each do |caregiver|
-    start_time = Faker::Date.between(2.years.ago, Date.yesterday)
-    end_time = Faker::Date.between(start_time, Date.today)
+    start_time = Faker::Date.between(from: 2.years.ago, to: Date.yesterday)
+    end_time = Faker::Date.between(from: start_time, to: Date.today)
     shifts << Shift.create!(
       account: account,
       caregiver: caregiver.personable,
