@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Starting"
+bin/rails s -p 5000
