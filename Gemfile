@@ -34,6 +34,8 @@ gem 'pry-rails'
 # grr, wh"?
 gem 'rb-readline'
 
+gem 'active_model_serializers'
+
 # Pluck random reconds when generating dummy data
 gem 'quick_random_records'
 
