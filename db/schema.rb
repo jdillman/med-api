@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 2019_11_17_203624) do
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.datetime "active_at"
-    t.boolean "active"
+    t.boolean "active", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
